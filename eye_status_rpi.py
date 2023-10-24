@@ -10,7 +10,7 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
 
 min_tolerance = 5.0
 D_Score = 0 # drowsiness score (increases when driver eyes are closed below a threshold)
-B_Score = 0 # body score (increases when driver face moves out of the white frame)
+B_Score = 0 # behaviour score (increases when driver face moves out of the white frame)
 
 p1 = (106, 60)
 p2 = (534, 420)
@@ -90,6 +90,7 @@ def get_aspect_ratio(image, outputs, top_bottom, left_right):
 while True:
     success, frame = cap.read()
     # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    induvidual_scores = []
     results = faceMesh.process(frame)
     if results.multi_face_landmarks:
         # mesh_coords = landmark_detection(frame, results, False)
@@ -131,15 +132,13 @@ while True:
 
             if x > 106 and x < 534:
                 if y > 60 and y < 420:
-                    B_Score -= 1
-                    if B_Score < 0:
-                        B_Score = 0
+                    induvidual_scores.append(0)
                 else:
-                    B_Score += 1
-                    if B_Score > 72:
-                        B_Score = 72
+                    induvidual_scores.append(1)
             else:
-                B_Score += 1
+                induvidual_scores.append(1)
+
+            B_Score = sum(induvidual_scores)
             
             # print(B_Score)
             
@@ -148,7 +147,7 @@ while True:
     fps = 1/(c_time - p_time)
     p_time = c_time
 
-    cv2.putText(frame, f'B_Score: {int(D_Score)}', (350, 90), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 255), 3)
+    cv2.putText(frame, f'B_Score: {int(B_Score)}', (350, 90), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 255), 3)
     # faces = cascade_face.detectMultiScale(frame, scaleFactor = 1.1, minNeighbors = 2)
     # for x, y, w, h in faces:
     #   frame = cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
