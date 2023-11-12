@@ -4,6 +4,6 @@
 <h3>Steps Involved</h3>
 
 *  Face detection and Eye Status Monitoring.
-*  Behaviour Analysis through pose estimation.
+*  Behaviour Analysis through human pose observation.
 *  Brainwave analysis and Health-Monitoring.
 
